@@ -8,7 +8,7 @@ import { getTokenFromRequest } from '@/lib/auth';
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
-    
+ 
     // Verify user access
     const tokenData = await getTokenFromRequest(request);
     if (tokenData.role !== 'user') {
@@ -31,18 +31,28 @@ export async function POST(request: NextRequest) {
     }
  
     // Create bug report
-    const bug = await Bug.create({
-      ...validatedData,
-      userId: user._id,
-      userName: user.name,
-      userEmail: user.email
-    });
+        // Create bug report
+        const bug = await Bug.create({
+            ...validatedData,
+            userId: user._id,
+            userName: user.name,
+            userEmail: user.email,
+            bug: Array.isArray(validatedData.bug)
+              ? validatedData.bug.map((b: any) => ({
+                  bugTitle: b.bugTitle,
+                  description: b.description,
+                  priority: b.priority,
+                }))
+              : [], // Default to an empty array if validatedData.bug is not an array
+          });
  
-    return NextResponse.json({
-      message: 'Bug report submitted successfully',
-      bug
-    }, { status: 201 });
- 
+    return NextResponse.json(
+      {
+        message: 'Bug report submitted successfully',
+        bug,
+      },
+      { status: 201 }
+    );
   } catch (error: any) {
     if (error.name === 'ZodError') {
       return NextResponse.json(
@@ -62,7 +72,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
-    
+ 
     const tokenData = await getTokenFromRequest(request);
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
@@ -77,7 +87,7 @@ export async function GET(request: NextRequest) {
         bugs = await Bug.find({}).sort({ createdAt: -1 });
       }
     } else if (tokenData.role === 'user') {
-      // user can only see their own bugs
+      // User can only see their own bugs
       bugs = await Bug.find({ userId: tokenData.userId }).sort({ createdAt: -1 });
     } else {
       return NextResponse.json(
@@ -88,12 +98,11 @@ export async function GET(request: NextRequest) {
  
     return NextResponse.json({
       message: 'Bugs retrieved successfully',
-      bugs
+      bugs,
     });
- 
   } catch (error: any) {
     console.error('Get bugs error:', error);
-    
+ 
     if (error.message === 'No token provided' || error.message === 'Invalid token') {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -107,3 +116,4 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+ 
