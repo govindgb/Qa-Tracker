@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Mail, Lock, TestTube2, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Bug, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -48,7 +48,7 @@ export default function LoginPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <TestTube2 className="w-8 h-8 text-white" />
+              <Bug className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               QA Monitor

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Mail, Lock, User, TestTube2, UserPlus, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, UserPlus, Bug,AlertCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 export default function RegisterPage() {
@@ -60,7 +60,7 @@ export default function RegisterPage() {
           {/* Header */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <TestTube2 className="w-8 h-8 text-white" />
+              <Bug className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Join QA Monitor
