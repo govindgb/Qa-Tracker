@@ -3,14 +3,16 @@ import connectDB from '@/lib/mongoose';
 import User from '@/models/userModel';
 import { loginSchema } from '@/lib/validations';
 import { comparePassword, generateToken } from '@/lib/auth';
-
+import { cookies } from 'next/headers';
+import { TokenExpiredError } from 'jsonwebtoken';
+ 
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
     
     const body = await request.json();
     const validatedData = loginSchema.parse(body);
-
+ 
     // Find user
     const user = await User.findOne({ email: validatedData.email });
     if (!user) {
@@ -19,7 +21,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
+ 
     // Check password
     const isValidPassword = await comparePassword(validatedData.password, user.password);
     if (!isValidPassword) {
@@ -28,23 +30,30 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
+ 
     // Generate token
     const token = generateToken({
       userId: user._id,
       email: user.email,
       role: user.role
     });
-
+ 
     // Return user data (without password) and token
     const { password, ...userWithoutPassword } = user.toObject();
-
+ 
+    const cookieStore = await cookies();
+    cookieStore.set('auth_token', token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24, // 1 day in seconds
+      path: '/',
+    });
+    console.log('Login successful',token);
+    
     return NextResponse.json({
       message: 'Login successful',
-      user: userWithoutPassword,
-      token
+      user: userWithoutPassword
     });
-
+ 
   } catch (error: any) {
     if (error.name === 'ZodError') {
       return NextResponse.json(
@@ -52,7 +61,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
+ 
     console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
@@ -60,3 +69,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+ 
+ 

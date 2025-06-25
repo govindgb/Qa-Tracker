@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff, Mail, Lock, TestTube2, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -110,6 +111,11 @@ export default function LoginPage() {
                 </>
               )}
             </button>
+            <div className="mt-4 text-center">
+          <a href="/forget-password" className="text-blue-500 font-medium hover:text-blue-600 transition-colors text-sm">
+            Forget password?
+          </a>
+        </div>
           </div>
 
           {/* Footer */}
