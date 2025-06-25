@@ -31,7 +31,7 @@ export default function Home() {
       {/* Blurred Background */}
       <div className="absolute inset-0 -z-10">
         <img
-          src="/bg.png"  
+          src="/bg.png"
           alt="Background"
           className="w-full h-full object-cover opacity-30 blur-lg"
         />
@@ -41,15 +41,21 @@ export default function Home() {
 
       {/* Centered Header */}
       <header className="py-6 z-10 w-full text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-blue-700 tracking-tight drop-shadow-lg">
-          QA Monitor
-        </h1>
+        <div className="inline-block relative group">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 tracking-tight drop-shadow-lg">
+            QA Monitor
+          </h1>
+          <span className="absolute left-1/2 -bottom-2 transform -translate-x-1/2 w-28 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 group-hover:animate-pulse transition-all duration-300 rounded-full" />
+        </div>
       </header>
+
+
+
 
       {/* Moved Welcome Title (OUTSIDE the box) */}
       <div className="z-10 mt-10 mb-6 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
-          👋 Welcome to <span className="text-blue-600">QA Monitor</span>
+          Welcome to <span className="text-blue-600">QA Monitor 👋</span>
         </h2>
       </div>
 
@@ -60,7 +66,7 @@ export default function Home() {
           {/* Left Content */}
           <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left space-y-8">
             <p className="text-lg text-gray-700 max-w-lg">
-              Your complete solution for test case management, team collaboration, and QA tracking in one place.
+              ✨ Empower your QA team with seamless test case management, efficient collaboration, and real-time insights – all in one elegant platform.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 w-full justify-center md:justify-start">
