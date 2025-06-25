@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff, Mail, Lock, User, TestTube2, UserPlus, AlertCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -11,20 +12,21 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const searchParams = useSearchParams();
+  const role = searchParams.get("role");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !role) {
       setError("All fields are required.");
       setIsLoading(false);
       return;
     }
 
     try {
-      await register(email, password, name);
+      await register(email, password, name , role);
     } catch (err: any) {
       setError("Registration failed.");
       console.error(err);

@@ -11,7 +11,7 @@ type User = {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string , name: string) => Promise<void>;
+  register: (email: string, password: string , name: string , role: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -31,9 +31,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (email: string, password: string , name: string) => {
+  const register = async (email: string, password: string , name: string , role: string) => {
     try {
-      const res = await axios.post("/api/auth/register", { email, password , name });
+      const res = await axios.post("/api/auth/register", { email, password , name , role });
       setUser(res.data.user); // assuming backend sends user
       router.push("/dashboard");
     } catch (err) {
