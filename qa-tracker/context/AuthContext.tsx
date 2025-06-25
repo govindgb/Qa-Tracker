@@ -13,6 +13,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string , name: string , role: string) => Promise<void>;
   logout: () => void;
+  resetPassword: (email: string, newPassword: string, confirmPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -41,6 +42,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+
+  const resetPassword = async (email: string, newPassword: string, confirmPassword:string) => {
+    try {
+      const res = await axios.post("/api/auth/reset-password", {
+        email,
+        newPassword,
+        confirmPassword,
+      });
+      console.log("Password reset successfully:", res.data);
+      router.push("/login");
+    } catch (err) {
+      console.error("Password reset failed:", err);
+    }
+  };
+  
+
   const logout = async () => {
     try {
       await axios.post("/api/auth/logout");
@@ -53,7 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register, logout, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
