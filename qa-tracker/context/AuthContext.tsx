@@ -71,7 +71,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         newPassword,
         confirmPassword,
       });
-      console.log("Password reset successfully:", res.data);
+      setUser(res.data.user); // assuming backend sends user
+      alert("Password reset successful. Please log in again.");
       router.push("/login");
     } catch (err) {
       console.error("Password reset failed:", err);
