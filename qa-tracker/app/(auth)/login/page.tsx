@@ -110,6 +110,11 @@ export default function LoginPage() {
                 </>
               )}
             </button>
+            <div className="mt-4 text-center">
+          <a href="/forget-password" className="text-blue-500 font-medium hover:text-blue-600 transition-colors text-sm">
+            Forget password?
+          </a>
+        </div>
           </div>
 
           {/* Footer */}
