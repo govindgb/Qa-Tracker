@@ -1,4 +1,4 @@
-import { User } from "@/models/userModel";
+import User  from "@/models/user";
 import { connectToDB } from "@/lib/mongoose";
 import { hashPassword, comparePassword } from "@/lib/bcrypt";
 import { signJWT } from "@/lib/jwt";
