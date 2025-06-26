@@ -5,46 +5,46 @@ import User from '@/models/userModel';
 import { bugSchema } from '@/lib/validations';
 import { getTokenFromRequest } from '@/lib/auth';
  
+// Updated API Route
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
- 
-    // Verify user access
-    const tokenData = await getTokenFromRequest(request);
-    if (tokenData.role !== 'user') {
-      return NextResponse.json(
-        { error: 'Access denied. User role required.' },
-        { status: 403 }
-      );
-    }
- 
+    
+    // Parse the request body
     const body = await request.json();
-    const validatedData = bugSchema.parse(body);
- 
-    // Get user details
-    const user = await User.findById(tokenData.userId);
-    if (!user) {
+    console.log('Full request body:', body);
+    
+    // Extract the testing_report data
+    const bugData = body.testing_report;
+    console.log('Bug data to save:', bugData);
+    
+    if (!bugData) {
       return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
+        { error: 'testing_report is required in request body' },
+        { status: 400 }
       );
     }
- 
-    // Create bug report
-        const bug = await Bug.create({
-            ...validatedData,
-            userId: user._id,
-            userName: user.name,
-            userEmail: user.email,
-            bug: Array.isArray(validatedData.bug)
-              ? validatedData.bug.map((b: any) => ({
-                  bugTitle: b.bugTitle,
-                  description: b.description,
-                  priority: b.priority,
-                }))
-              : [], // Default to an empty array if validatedData.bug is not an array
-          });
- 
+    
+    // Validate required fields
+    if (!bugData.user_id || !bugData.project_name || !bugData.userName) {
+      return NextResponse.json(
+        { error: 'Missing required fields: user_id, project_name, or userName' },
+        { status: 400 }
+      );
+    }
+    
+    // Create bug report with the exact structure from your payload
+    const bug = await Bug.create({
+      user_id: bugData.user_id,
+      project_name: bugData.project_name,
+      userName: bugData.userName.trim(), // Remove extra spaces
+      feedback: bugData.feedback,
+      status: bugData.status,
+      bugDetails: bugData.bugDetails || [], // Use the bugDetails array as-is
+    });
+    
+    console.log('Bug created successfully:', bug);
+    
     return NextResponse.json(
       {
         message: 'Bug report submitted successfully',
@@ -53,21 +53,25 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
-    if (error.name === 'ZodError') {
+    console.error('Create bug error:', error);
+    
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.errors },
+        { 
+          error: 'Validation failed', 
+          details: Object.values(error.errors).map((err: any) => err.message)
+        },
         { status: 400 }
       );
     }
- 
-    console.error('Create bug error:', error);
+    
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error.message },
       { status: 500 }
     );
   }
 }
- 
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
