@@ -1,134 +1,79 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { NextPage } from "next";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-interface Bug {
+interface Project {
   _id: string;
-  projectName: string;
+  project_name: string;
   userName: string;
   status: "pending" | "in-progress" | "resolved" | "rejected";
+  createdAt: string;
+  updatedAt: string;
 }
 
-const ProjectStatusPage: NextPage = () => {
-  const [bugs, setBugs] = useState<Bug[]>([]);
-  const [editingBugId, setEditingBugId] = useState<string | null>(null);
+export default function ProjectTable() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [newStatus, setNewStatus] = useState<string>("");
 
   useEffect(() => {
-    // Fetch bugs from the API
-    const fetchBugs = async () => {
-      try {
-        const response = await axios.get("/api/bug");
-        setBugs(response.data.bugs);
-      } catch (error) {
-        console.error("Failed to fetch bugs:", error);
-      }
-    };
-
-    fetchBugs();
+    axios.get("/api/project").then(res => setProjects(res.data.projects));
   }, []);
 
-  const handleEdit = (bugId: string, currentStatus: string) => {
-    setEditingBugId(bugId);
-    setNewStatus(currentStatus);
+  const handleEdit = (id: string, status: string) => {
+    setEditingId(id);
+    setNewStatus(status);
   };
 
-  const handleSave = async (bugId: string) => {
-    try {
-      if (!newStatus) {
-        alert("Please select a valid status.");
-        return;
-      }
-  
-      await axios.put(`/api/bug/${bugId}`, { status: newStatus });
-      setBugs((prev) =>
-        prev.map((bug) =>
-          bug._id === bugId ? { ...bug, status: newStatus as Bug["status"] } : bug
-        )
-      );
-      setEditingBugId(null);
-      setNewStatus("");
-    } catch (error) {
-      console.error("Failed to update bug status:", error);
-      alert("Failed to update bug status. Please try again.");
-    }
-  };
-
-  const handleCancel = () => {
-    setEditingBugId(null);
-    setNewStatus("");
+  const handleSave = async (id: string) => {
+    await axios.put("/api/project", { _id: id, status: newStatus });
+    setProjects(projects.map(p => p._id === id ? { ...p, status: newStatus as Project["status"], updatedAt: new Date().toISOString() } : p));
+    setEditingId(null);
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
-      <h1 className="text-2xl font-bold mb-4">Project Status</h1>
-      <table className="table-auto w-full border-collapse border border-gray-300">
+    <div className="max-w-4xl mx-auto mt-8 bg-white shadow rounded p-6">
+      <h2 className="text-2xl font-bold mb-4">Project List</h2>
+      <table className="w-full border">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Project Name
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Username
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Bug Status
-            </th>
-            <th className="border border-gray-300 px-4 py-2 text-left">
-              Actions
-            </th>
+            <th className="p-2 border">Project Name</th>
+            <th className="p-2 border">Username</th>
+            <th className="p-2 border">Status</th>
+            <th className="p-2 border">Created</th>
+            <th className="p-2 border">Updated</th>
+            <th className="p-2 border">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {bugs.map((bug) => (
-            <tr key={bug._id} className="hover:bg-gray-50">
-              <td className="border border-gray-300 px-4 py-2">
-                {bug.projectName}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {bug.userName}
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {editingBugId === bug._id ? (
-                  <select
-                    value={newStatus}
-                    onChange={(e) => setNewStatus(e.target.value)}
-                    className="border border-gray-300 rounded px-2 py-1"
-                  >
+          {projects.map(p => (
+            <tr key={p._id} className="hover:bg-gray-50">
+              <td className="p-2 border">{p.project_name}</td>
+              <td className="p-2 border">{p.userName}</td>
+              <td className="p-2 border">
+                {editingId === p._id ? (
+                  <select value={newStatus} onChange={e => setNewStatus(e.target.value)} className="border rounded px-2 py-1">
                     <option value="pending">Pending</option>
                     <option value="in-progress">In Progress</option>
                     <option value="resolved">Resolved</option>
                     <option value="rejected">Rejected</option>
                   </select>
                 ) : (
-                  bug.status
+                  <span className={`px-2 py-1 rounded ${p.status === "resolved" ? "bg-green-100 text-green-700" : p.status === "rejected" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}>
+                    {p.status}
+                  </span>
                 )}
               </td>
-              <td className="border border-gray-300 px-4 py-2">
-                {editingBugId === bug._id ? (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleSave(bug._id)}
-                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={handleCancel}
-                      className="bg-gray-500 text-white px-3 py-1 rounded hover:bg-gray-600"
-                    >
-                      Cancel
-                    </button>
-                  </div>
+              <td className="p-2 border">{new Date(p.createdAt).toLocaleString()}</td>
+              <td className="p-2 border">{new Date(p.updatedAt).toLocaleString()}</td>
+              <td className="p-2 border">
+                {editingId === p._id ? (
+                  <button onClick={() => handleSave(p._id)} className="bg-green-500 text-white px-3 py-1 rounded mr-2">Save</button>
                 ) : (
-                  <button
-                    onClick={() => handleEdit(bug._id, bug.status)}
-                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-                  >
-                    Edit
-                  </button>
+                  <button onClick={() => handleEdit(p._id, p.status)} className="bg-blue-500 text-white px-3 py-1 rounded">Edit</button>
+                )}
+                {editingId === p._id && (
+                  <button onClick={() => setEditingId(null)} className="bg-gray-400 text-white px-3 py-1 rounded ml-2">Cancel</button>
                 )}
               </td>
             </tr>
@@ -137,6 +82,4 @@ const ProjectStatusPage: NextPage = () => {
       </table>
     </div>
   );
-};
-
-export default ProjectStatusPage;
+}
