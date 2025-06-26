@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   LayoutDashboard,
   Settings,
@@ -22,6 +23,26 @@ export default function Sidebar({
   setIsSidebarOpen: (val: boolean) => void;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  // ✅ Logout handler
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", {
+        method: "POST",
+      });
+
+      if (res.ok) {
+        toast.success("Logged out successfully");
+        router.push("/login");
+      } else {
+        toast.error("Logout failed");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
 
   return (
     <aside
@@ -91,13 +112,13 @@ export default function Sidebar({
 
       {/* Logout */}
       <div className="pt-6 border-t border-gray-100 px-4 mb-4">
-        <Link
-          href="/logout"
-          className="flex items-center gap-3 text-gray-500 hover:text-red-500 transition-all"
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 text-gray-500 hover:text-red-500 transition-all w-full"
         >
           <LogOut className="w-5 h-5" />
           {isSidebarOpen && <span className="text-sm font-medium">Logout</span>}
-        </Link>
+        </button>
       </div>
     </aside>
   );
