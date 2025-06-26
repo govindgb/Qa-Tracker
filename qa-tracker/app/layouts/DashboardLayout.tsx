@@ -1,16 +1,23 @@
-import Sidebar from "@/app/components/Sidebar";
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+"use client";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+import { useState } from "react";
+import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+
+export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   return (
-    <div className="min-h-screen">
-      <Sidebar />
-      <div className="ml-64 pt-16 pb-12"> 
-        <Header />
-        <main className="p-6">{children}</main>
-        <Footer />
-      </div>
-    </div>
+    <>
+      <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+      <Header isSidebarOpen={isSidebarOpen} />
+      <main
+        className={`pt-16 transition-all duration-300 ${
+          isSidebarOpen ? "ml-64" : "ml-20"
+        } p-6 bg-gray-50 min-h-screen`}
+      >
+        {children}
+      </main>
+    </>
   );
 }

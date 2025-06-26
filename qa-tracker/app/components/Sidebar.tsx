@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Settings,
@@ -6,62 +9,129 @@ import {
   Users,
   Bug,
   ClipboardList,
+  Menu,
+  ChevronLeft,
 } from "lucide-react";
+import clsx from "clsx";
 
-export default function Sidebar() {
+export default function Sidebar({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}: {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (val: boolean) => void;
+}) {
+  const pathname = usePathname();
+
   return (
-    <aside className="w-64 h-screen bg-gradient-to-b from-blue-600 to-purple-700 text-white fixed top-0 left-0 shadow-xl flex flex-col justify-between py-8 px-6 z-30">
-      {/* Logo */}
+    <aside
+      className={clsx(
+        "h-screen bg-white border-r border-gray-200 shadow-xl fixed top-0 left-0 z-30 flex flex-col justify-between transition-all duration-300",
+        isSidebarOpen ? "w-64" : "w-20"
+      )}
+    >
+      {/* Top */}
       <div>
-        <div className="flex items-center gap-3 mb-10 px-2">
-          <Bug className="w-7 h-7 text-white" />
-          <h2 className="text-2xl font-bold tracking-wide">QA Monitor</h2>
+        {/* Toggle Button */}
+        <div className="flex items-center justify-between px-4 pt-4">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="text-gray-500 hover:text-indigo-600 focus:outline-none"
+          >
+            {isSidebarOpen ? (
+              <ChevronLeft className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-8 mt-4 px-4">
+          <div className="p-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 shadow-md">
+            <Bug className="w-6 h-6 text-white" />
+          </div>
+          {isSidebarOpen && (
+            <h2 className="text-xl font-bold text-gray-800">QA Monitor</h2>
+          )}
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-6">
-          <SidebarLink href="/dashboard" icon={<LayoutDashboard />} label="Dashboard" />
-          <SidebarLink href="/dashboard/users" icon={<Users />} label="Users" />
-          <SidebarLink href="/dashboard/settings" icon={<Settings />} label="Settings" />
+        <nav className="space-y-2 px-2">
+          <SidebarLink
+            href="/dashboard"
+            icon={<LayoutDashboard className="w-5 h-5" />}
+            label="Dashboard"
+            isSidebarOpen={isSidebarOpen}
+            active={pathname === "/dashboard"}
+          />
+          <SidebarLink
+            href="/dashboard/users"
+            icon={<Users className="w-5 h-5" />}
+            label="Users"
+            isSidebarOpen={isSidebarOpen}
+            active={pathname === "/dashboard/users"}
+          />
+          <SidebarLink
+            href="/dashboard/settings"
+            icon={<Settings className="w-5 h-5" />}
+            label="Settings"
+            isSidebarOpen={isSidebarOpen}
+            active={pathname === "/dashboard/settings"}
+          />
           <SidebarLink
             href="/dashboard/check-project-status"
-            icon={<ClipboardList />}
+            icon={<ClipboardList className="w-5 h-5" />}
             label="Project Status"
+            isSidebarOpen={isSidebarOpen}
+            active={pathname === "/dashboard/check-project-status"}
           />
         </nav>
       </div>
 
       {/* Logout */}
-      <div>
+      <div className="pt-6 border-t border-gray-100 px-4 mb-4">
         <Link
           href="/logout"
-          className="flex items-center gap-3 text-white/80 hover:text-red-300 transition-all"
+          className="flex items-center gap-3 text-gray-500 hover:text-red-500 transition-all"
         >
           <LogOut className="w-5 h-5" />
-          <span className="text-sm font-medium">Logout</span>
+          {isSidebarOpen && <span className="text-sm font-medium">Logout</span>}
         </Link>
       </div>
     </aside>
   );
 }
 
-// Reusable Sidebar Link Component
+// Sidebar Link Component
 function SidebarLink({
   href,
   icon,
   label,
+  isSidebarOpen,
+  active,
 }: {
   href: string;
   icon: React.ReactNode;
   label: string;
+  isSidebarOpen: boolean;
+  active: boolean;
 }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 text-white/90 hover:text-yellow-300 transition-all"
+      className={clsx(
+        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all",
+        isSidebarOpen ? "justify-start" : "justify-center",
+        active
+          ? "bg-indigo-100 text-indigo-700"
+          : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-600"
+      )}
     >
-      <div className="w-5 h-5">{icon}</div>
-      <span className="text-sm font-medium">{label}</span>
+      <div className={clsx("text-indigo-500", active && "text-indigo-700")}>
+        {icon}
+      </div>
+      {isSidebarOpen && <span>{label}</span>}
     </Link>
   );
 }

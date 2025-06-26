@@ -1,8 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Mail, Lock, User, UserPlus, Bug,AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, UserPlus, AlertCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -37,94 +39,140 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, rgba(0,0,0,0.1) 2px, transparent 0)`,
-            backgroundSize: "50px 50px",
-          }}
-        />
-      </div>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="w-full flex items-center px-6 py-4 border-b border-gray-200 shadow-sm">
+        <div className="flex items-center space-x-3">
+          <Image
+            src="/IconLogo4.png"
+            alt="QA Monitor Logo"
+            width={40}
+            height={40}
+            className="object-contain"
+          />
+          <span className="text-xl font-semibold text-gray-800">
+            QA Monitor
+          </span>
+        </div>
+      </header>
 
-      {/* Container */}
-      <div className="w-full max-w-md relative z-10">
-        {/* Floating Elements */}
-        <div className="absolute -top-4 -left-4 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse" />
-        <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-purple-200 rounded-full opacity-20 animate-pulse" style={{ animationDelay: '1s' }} />
-
-        {/* Card */}
-        <div className="bg-white/80 rounded-2xl shadow-2xl border border-white/20 p-8 transform hover:scale-[1.01] transition-all duration-300">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <Bug className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Join QA Monitor
-            </h1>
-            <p className="text-gray-600 mt-2">Start your testing journey today</p>
+      {/* Layout */}
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
+        {/* Left Image Section */}
+        <div className="hidden lg:flex w-1/2 bg-white-50 relative p-8 items-center justify-center">
+          <div className="relative w-[1000px] h-[700px]">
+            <Image
+              src="/IconImg10.png"
+              alt="Main QA Illustration"
+              fill
+              className="object-contain absolute top-[-23px] left-[-40px] w-[620px] h-[413px]"
+            />
           </div>
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center space-x-3 animate-pulse">
-              <AlertCircle className="w-5 h-5 text-red-500" />
-              <p className="text-red-700 text-sm">{error}</p>
-            </div>
-          )}
+          <Image
+            src="/Iconimg4.jpg"
+            alt="Bug Icon"
+            width={120}
+            height={100}
+            className="absolute top-20 left-30"
+          />
+          <Image
+            src="/Iconimg2.jpg"
+            alt="QA Icon"
+            width={120}
+            height={100}
+            className="absolute top-30 right-25"
+          />
+          <Image
+            src="/Iconimg3.jpg"
+            alt="Gear Icon"
+            width={120}
+            height={100}
+            className="absolute bottom-50 left-30"
+          />
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name */}
-            <InputField icon={<User className="h-5 w-5 text-gray-400" />} value={name} onChange={(e:any) => setName(e.target.value)} placeholder="Full Name" />
+        {/* Right Form Section */}
+        <div className="w-full lg:w-7/12 flex items-center justify-start p-6 lg:pl-10 lg:pr-0">
+          <div className="w-full max-w-xl bg-white shadow-2xl border border-gray-200 rounded-2xl p-12 -mt-6 ml-30 z-10">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Create your account <span className="inline-block">🚀</span>
+            </h2>
+            <p className="text-base text-gray-600 mb-8">
+              Start your testing journey today
+            </p>
 
-            {/* Email */}
-            <InputField icon={<Mail className="h-5 w-5 text-gray-400" />} value={email} onChange={(e:any) => setEmail(e.target.value)} placeholder="Email" type="email" />
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center space-x-3 animate-pulse">
+                <AlertCircle className="w-5 h-5 text-red-500" />
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
 
-            {/* Password */}
-            <PasswordField
-              value={password}
-              onChange={(e:any) => setPassword(e.target.value)}
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
-              placeholder="Create Password"
-            />
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name Field */}
+              <InputField
+                icon={<User className="h-6 w-6 text-gray-400" />}
+                value={name}
+                onChange={(e: any) => setName(e.target.value)}
+                placeholder="Full Name"
+              />
 
-            {/* Strength */}
-            <div className="flex space-x-1">
-              <div className={`h-1 flex-1 rounded-full ${password.length >= 8 ? "bg-green-400" : "bg-gray-200"}`} />
-              <div className={`h-1 flex-1 rounded-full ${/[A-Z]/.test(password) ? "bg-green-400" : "bg-gray-200"}`} />
-              <div className={`h-1 flex-1 rounded-full ${/[0-9]/.test(password) ? "bg-green-400" : "bg-gray-200"}`} />
-            </div>
+              {/* Email Field */}
+              <InputField
+                icon={<Mail className="h-6 w-6 text-gray-400" />}
+                value={email}
+                onChange={(e: any) => setEmail(e.target.value)}
+                placeholder="Email Address"
+                type="email"
+              />
 
-            {/* Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transform hover:scale-105 transition-all duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Creating account...</span>
-                </>
-              ) : (
-                <>
-                  <UserPlus className="w-5 h-5" />
-                  <span>Register</span>
-                </>
-              )}
-            </button>
-          </form>
+              {/* Password Field */}
+              <PasswordField
+                value={password}
+                onChange={(e: any) => setPassword(e.target.value)}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                placeholder="Create Password"
+              />
 
-          <div className="mt-4 text-center">
-            <p className="text-gray-600">
+              {/* Strength Meter */}
+              <div className="flex space-x-1">
+                <div className={`h-1 flex-1 rounded-full ${password.length >= 8 ? "bg-green-400" : "bg-gray-200"}`} />
+                <div className={`h-1 flex-1 rounded-full ${/[A-Z]/.test(password) ? "bg-green-400" : "bg-gray-200"}`} />
+                <div className={`h-1 flex-1 rounded-full ${/[0-9]/.test(password) ? "bg-green-400" : "bg-gray-200"}`} />
+              </div>
+
+              {/* Register Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-indigo-600 text-white py-4 text-lg rounded-xl hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 flex items-center justify-center space-x-2"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="w-5 h-5" />
+                    <span>Register</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Sign In Link */}
+            <div className="mt-8 text-base text-center text-gray-600">
               Already have an account?{" "}
-              <a href="/login" className="text-blue-600 font-medium hover:text-purple-600 transition-colors">
+              <a
+                href="/login"
+                className="text-indigo-600 hover:underline font-medium"
+              >
                 Sign in
               </a>
-            </p>
+            </div>
           </div>
         </div>
       </div>
@@ -135,11 +183,11 @@ export default function RegisterPage() {
 // Reusable Input Field
 function InputField({ icon, ...props }: any) {
   return (
-    <div className="relative group">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">{icon}</div>
+    <div className="relative">
+      <div className="absolute top-4 left-4">{icon}</div>
       <input
         {...props}
-        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 hover:bg-white/70 transition-all"
+        className="w-full pl-14 pr-4 py-4 text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
         required
       />
     </div>
@@ -149,26 +197,24 @@ function InputField({ icon, ...props }: any) {
 // Reusable Password Field
 function PasswordField({ value, onChange, showPassword, setShowPassword, placeholder }: any) {
   return (
-    <div className="relative group">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <Lock className="h-5 w-5 text-gray-400" />
-      </div>
+    <div className="relative">
+      <Lock className="absolute top-4 left-4 h-6 w-6 text-gray-400" />
       <input
         type={showPassword ? "text" : "password"}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 hover:bg-white/70 transition-all"
+        className="w-full pl-14 pr-12 py-4 text-base border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
       <button
         type="button"
         onClick={() => setShowPassword(!showPassword)}
-        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+        className="absolute top-4 right-4"
       >
         {showPassword ? (
-          <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+          <EyeOff className="h-6 w-6 text-gray-400" />
         ) : (
-          <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+          <Eye className="h-6 w-6 text-gray-400" />
         )}
       </button>
     </div>
