@@ -20,6 +20,7 @@ interface ReportPayload {
 
 interface ReportContextType {
   submitReport: (data: ReportPayload) => Promise<void>;
+  getProjectDetails: (id: string) => Promise<any>; // You can replace `any` with a proper type
 }
 
 const ReportContext = createContext<ReportContextType | null>(null);
@@ -34,8 +35,19 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const getProjectDetails = async (id: string) => {
+    try {
+      const res = await axios.get(`/api/bug?id=${id}`);
+      console.log("Project details fetched:", res.data);
+      return res.data;
+    } catch (err) {
+      console.error("Error fetching project details:", err);
+      throw err;
+    }
+  };
+
   return (
-    <ReportContext.Provider value={{ submitReport }}>
+    <ReportContext.Provider value={{ submitReport, getProjectDetails }}>
       {children}
     </ReportContext.Provider>
   );

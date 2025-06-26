@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useReport } from "@/context/ReportContext";
-
+import { useSearchParams } from "next/navigation";
 // Types
 interface Bug {
   id: number;
@@ -29,7 +29,56 @@ const QAMonitorForm: React.FC = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { submitReport } = useReport();
+  const { submitReport , getProjectDetails } = useReport();
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get("id");
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      if (!projectId) return;
+  
+      setIsLoading(true);
+      setLoadError(null);
+      try {
+        const res = await getProjectDetails(projectId);
+        const data = res?.bug
+        if (data?.project_name) {
+          setFormData({
+            projectName: data.project_name || "",
+            userName: data.userName || "",
+            feedback: data.feedback || "",
+            status: data.status || "pending",
+            bugs:
+              data.bugDetails?.map((bug: any, index: number) => ({
+                id: Date.now() + index, // Unique ID for form rendering
+                bugTitle: bug.bugTitle || "",
+                description: bug.description || "",
+                priority: bug.priority || "medium",
+              })) || [],
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch project details:", error);
+        setLoadError("Failed to load project data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchProject();
+  }, [projectId, getProjectDetails]);
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Updates the formData state with the new value for the specified field.
+ * 
+ * @param field - The field of the FormData to be updated, excluding "bugs".
+ * @param value - The new value to be assigned to the specified field.
+ */
+
+/*******  76f7b825-00f8-4900-8cd1-44f58908d747  *******/
 
   const handleInputChange = (
     field: keyof Omit<FormData, "bugs">,

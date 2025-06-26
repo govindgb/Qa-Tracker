@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Plus, Edit3, Calendar, User, FolderOpen } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import DashboardLayout from "@/app/layouts/DashboardLayout";
 
 interface Project {
   _id: string;
@@ -58,6 +59,7 @@ export default function ProjectTable() {
   };
 
   return (
+     <DashboardLayout>
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -203,5 +205,6 @@ export default function ProjectTable() {
         </div>
       </div>
     </div>
+    </DashboardLayout>
   );
 }
