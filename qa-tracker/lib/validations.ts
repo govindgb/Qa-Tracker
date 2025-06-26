@@ -27,11 +27,12 @@ export const bugSchema = z.object({
     .min(2, "Project name must be at least 2 characters")
     .max(100, "Project name cannot exceed 100 characters")
     .trim(),
-  testingRound: z
-    .number()
-    .min(1, "Testing round must be at least 1")
-    .max(100, "Testing round cannot exceed 100"),
-  bug: z
+  feedback: z
+    .string()
+    .min(5, "Feedback must be at least 5 characters")
+    .max(1000, "Feedback cannot exceed 1000 characters")
+    .trim(),
+  bugDetails: z
     .array(
       z.object({
         bugTitle: z
@@ -53,8 +54,7 @@ export const bugSchema = z.object({
     .optional()
     .default("pending"),
   userId: z.string().nonempty("User ID is required"),
-  userName: z.string().nonempty("User name is required"),
-  userEmail: z.string().email("Invalid email format"),
+  userEmail: z.string().email("Invalid email format").optional(),
 });
  
 export type RegisterInput = z.infer<typeof registerSchema>;
