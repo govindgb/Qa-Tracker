@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { UserCircle } from "lucide-react";
 
 export default function Header({ isSidebarOpen }: { isSidebarOpen: boolean }) {
@@ -11,10 +12,13 @@ export default function Header({ isSidebarOpen }: { isSidebarOpen: boolean }) {
         QA Monitor Dashboard
       </div>
 
-      <div className="flex items-center gap-2 text-sm text-gray-700">
-        <span className="hidden sm:inline font-medium">Welcome, Tester!</span>
-        <UserCircle className="w-6 h-6 text-indigo-500" />
-      </div>
+      {/* ✅ Wrap this block with Link */}
+      <Link href="/profile">
+        <div className="flex items-center gap-2 text-sm cursor-pointer hover:underline">
+          <span className="hidden sm:inline">Welcome, Tester!</span>
+          <UserCircle className="w-6 h-6" />
+        </div>
+      </Link>
     </header>
   );
 }

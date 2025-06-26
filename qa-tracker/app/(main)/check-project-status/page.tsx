@@ -39,7 +39,7 @@ export default function ProjectTable() {
   };
 
   const handleEditProject = (id: string) => {
-    window.location.href = `/check-project-status/add-project/${id}`;
+    window.location.href = `/check-project-status/add-project?id=${id}`;
   };
 
   const getStatusBadge = (status: string) => {
