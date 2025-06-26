@@ -1,16 +1,17 @@
 "use client";
+ 
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Mail, Lock, Bug, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
-
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import Image from "next/image";
+ 
 export default function LoginPage() {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -20,129 +21,141 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
+ 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, rgba(0,0,0,0.1) 2px, transparent 0)`,
-            backgroundSize: "50px 50px",
-          }}
-        />
-      </div>
-
-      {/* Main Container */}
-      <div className="w-full max-w-md relative z-10">
-        {/* Floating Elements */}
-        <div className="absolute -top-6 -left-6 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse" />
-        <div
-          className="absolute -bottom-6 -right-6 w-28 h-28 bg-purple-200 rounded-full opacity-20 animate-pulse"
-          style={{ animationDelay: "1.5s" }}
-        />
-
-        {/* Card */}
-        <div className="bg-white/80 rounded-2xl shadow-2xl border border-white/20 p-8 transform hover:scale-[1.01] transition-all duration-300">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <Bug className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              QA Monitor
-            </h1>
-            <p className="text-gray-600 mt-2">Welcome back, User!</p>
+    <div className="min-h-screen bg-white">
+      {/* ✅ Header stays at the top */}
+      <header className="w-full flex items-center px-6 py-4 border-b border-gray-200 shadow-sm">
+        <div className="flex items-center space-x-3">
+          <Image
+            src="/IconLogo4.png"
+            alt="QA Monitor Logo"
+            width={40}
+            height={40}
+            className="object-contain"
+          />
+          <span className="text-xl font-semibold text-gray-800">
+            QA Monitor
+          </span>
+        </div>
+      </header>
+ 
+      {/* ✅ Full screen layout with conditional image display */}
+      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-72px)]">
+        {/* Left Side - Main Illustration (hidden on small screens) */}
+        <div className="hidden lg:flex w-1/2 bg-white-50 relative p-8 items-center justify-center">
+          {/* Main Illustration Centered */}
+          <div className="relative w-[800px] h-[500px]">
+            <Image
+              src="/IconImg10.png"
+              alt="Main QA Illustration"
+              fill
+              className="object-contain absolute top-[-23px] left-[-96px] w-[620px] h-[413px] rounded-none"
+            />
           </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Field */}
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
+ 
+          {/* Decorative Icons Around */}
+          <Image
+            src="/Iconimg4.jpg"
+            alt="Bug Icon"
+            width={120}
+            height={100}
+            className="absolute top-30 left-30"
+          />
+          <Image
+            src="/Iconimg2.jpg"
+            alt="QA Icon"
+            width={120}
+            height={100}
+            className="absolute top-30 right-45"
+          />
+          <Image
+            src="/Iconimg3.jpg"
+            alt="Gear Icon"
+            width={120}
+            height={100}
+            className="absolute bottom-50 left-30"
+          />
+        </div>
+ 
+        {/* Right Side - Login Form */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+          <div className="w-full max-w-md">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome back <span className="inline-block">👋</span>
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">Log in your account</p>
+ 
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Email */}
+              <div className="relative">
+                <Mail className="absolute top-3.5 left-3 h-5 w-5 text-gray-400" />
+                <input
+                  type="email"
+                  placeholder="jrobinson@hotmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
               </div>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 hover:bg-white/70 transition-all duration-200"
-                required
-              />
-            </div>
-
-            {/* Password Field */}
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
+ 
+              {/* Password */}
+              <div className="relative">
+                <Lock className="absolute top-3.5 left-3 h-5 w-5 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-3.5 right-3"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
+                </button>
               </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/50 hover:bg-white/70 transition-all duration-200"
-                required
-              />
+ 
+              {/* Forgot Password */}
+              <div className="text-center text-sm">
+                <a
+                  href="/forget-password"
+                  className="text-indigo-600 hover:underline"
+                >
+                  Forgot password?
+                </a>
+              </div>
+ 
+              {/* Submit Button */}
               <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50"
               >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
-                )}
+                {isLoading ? "Signing in..." : "Log in"}
               </button>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Signing in...</span>
-                </>
-              ) : (
-                <>
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Sign In</span>
-                </>
-              )}
-            </button>
-
-            {/* Forgot Password */}
-            <div className="mt-4 text-center">
-              <a
-                href="/forget-password"
-                className="text-blue-600 font-medium hover:text-purple-600 transition-colors text-sm"
-              >
-                Forgot password?
+            </form>
+ 
+            {/* Sign up */}
+            <div className="mt-6 text-sm text-center text-gray-600">
+              Don’t have an account?{" "}
+              <a href="/register" className="text-indigo-600 hover:underline">
+                Sign up
               </a>
             </div>
-          </form>
-
-          {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-600">
-              New to QA Monitor?{" "}
-              <a
-                href="/register"
-                className="text-blue-600 font-medium hover:text-purple-600 transition-colors"
-              >
-                Create an account
-              </a>
-            </p>
           </div>
         </div>
       </div>
     </div>
   );
 }
+ 
+
