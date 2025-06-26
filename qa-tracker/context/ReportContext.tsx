@@ -14,6 +14,7 @@ interface ReportPayload {
     userName: string;
     feedback: string;
     bugDetails: Bug[];
+    status: string;
   };
 }
 

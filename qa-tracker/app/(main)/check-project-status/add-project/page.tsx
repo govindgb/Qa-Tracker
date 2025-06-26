@@ -15,6 +15,7 @@ interface FormData {
   projectName: string;
   userName: string;
   feedback: string;
+  status: string;
   bugs: Bug[];
 }
 
@@ -23,6 +24,7 @@ const QAMonitorForm: React.FC = () => {
     projectName: "",
     userName: "",
     feedback: "",
+    status: "pending",
     bugs: [],
   });
 
@@ -65,7 +67,8 @@ const QAMonitorForm: React.FC = () => {
   const isFormValid = () =>
     formData.projectName.trim() !== "" &&
     formData.userName.trim() !== "" &&
-    formData.feedback.trim() !== "";
+    formData.feedback.trim() !== "" &&
+    formData.status.trim() !== "";
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -75,6 +78,7 @@ const QAMonitorForm: React.FC = () => {
           project_name: formData.projectName,
           userName: formData.userName,
           feedback: formData.feedback,
+          status: formData.status,
           bugDetails: formData.bugs.map((b) => ({
             bugTitle: b.bugTitle,
             description: b.description,
@@ -84,7 +88,13 @@ const QAMonitorForm: React.FC = () => {
       });
 
       alert("Report submitted successfully!");
-      setFormData({ projectName: "", userName: "", feedback: "", bugs: [] });
+      setFormData({
+        projectName: "",
+        userName: "",
+        feedback: "",
+        status: "pending",
+        bugs: [],
+      });
     } catch (err) {
       alert("Failed to submit report.");
     } finally {
@@ -121,6 +131,19 @@ const QAMonitorForm: React.FC = () => {
             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
             placeholder="e.g. Govind"
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Status *
+          </label>
+          <select
+            value={formData.status}
+            onChange={(e) => handleInputChange("status", e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+          >
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+          </select>
         </div>
       </div>
 
@@ -232,6 +255,7 @@ const QAMonitorForm: React.FC = () => {
               projectName: "",
               userName: "",
               feedback: "",
+              status: "pending",
               bugs: [],
             })
           }
