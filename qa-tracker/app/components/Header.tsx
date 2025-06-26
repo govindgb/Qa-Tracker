@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { UserCircle } from "lucide-react";
 
 export default function Header() {
@@ -6,11 +7,13 @@ export default function Header() {
       {/* Brand Title */}
       <div className="text-xl font-semibold tracking-wide">QA Monitor Dashboard</div>
 
-      {/* User Info */}
-      <div className="flex items-center gap-2 text-sm">
-        <span className="hidden sm:inline">Welcome, Tester!</span>
-        <UserCircle className="w-6 h-6" />
-      </div>
+      {/* ✅ Wrap this block with Link */}
+      <Link href="/profile">
+        <div className="flex items-center gap-2 text-sm cursor-pointer hover:underline">
+          <span className="hidden sm:inline">Welcome, Tester!</span>
+          <UserCircle className="w-6 h-6" />
+        </div>
+      </Link>
     </header>
   );
 }
