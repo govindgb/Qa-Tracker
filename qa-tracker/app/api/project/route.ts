@@ -5,7 +5,7 @@ import Bug from "@/models/bug";
 // GET: List all projects
 export async function GET() {
   await connectDB();
-  const projects = await Bug.find({}, "projectName userName status createdAt updatedAt").sort({ createdAt: -1 });
+  const projects = await Bug.find({}, "project_name userName status createdAt updatedAt").sort({ createdAt: -1 });
   return NextResponse.json({ projects });
 }
 
