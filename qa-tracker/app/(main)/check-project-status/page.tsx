@@ -1,85 +1,279 @@
 "use client";
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-interface Project {
-  _id: string;
+import React, { useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { useReport } from "@/context/ReportContext";
+ 
+// Types
+interface Bug {
+  id: number;
+  bugTitle: string;
+  description: string;
+  priority: string;
+}
+ 
+interface FormData {
   projectName: string;
   userName: string;
-  status: "pending" | "in-progress" | "resolved" | "rejected";
-  createdAt: string;
-  updatedAt: string;
+  feedback: string;
+  status: string;
+  bugs: Bug[];
 }
-
-export default function ProjectTable() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [newStatus, setNewStatus] = useState<string>("");
-
-  useEffect(() => {
-    axios.get("/api/project").then(res => setProjects(res.data.projects));
-  }, []);
-
-  const handleEdit = (id: string, status: string) => {
-    setEditingId(id);
-    setNewStatus(status);
+ 
+const QAMonitorForm: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
+    projectName: "",
+    userName: "",
+    feedback: "",
+    status: "pending",
+    bugs: [],
+  });
+ 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { submitReport } = useReport();
+ 
+  const handleInputChange = (
+    field: keyof Omit<FormData, "bugs">,
+    value: string
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
-  const handleSave = async (id: string) => {
-    await axios.put("/api/project", { _id: id, status: newStatus });
-    setProjects(projects.map(p => p._id === id ? { ...p, status: newStatus as Project["status"], updatedAt: new Date().toISOString() } : p));
-    setEditingId(null);
+ 
+  const addBug = () => {
+    const newBug: Bug = {
+      id: Date.now(),
+      bugTitle: "",
+      description: "",
+      priority: "medium",
+    };
+    setFormData((prev) => ({ ...prev, bugs: [...prev.bugs, newBug] }));
   };
-
+ 
+  const updateBug = (id: number, field: keyof Bug, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      bugs: prev.bugs.map((bug) =>
+        bug.id === id ? { ...bug, [field]: value } : bug
+      ),
+    }));
+  };
+ 
+  const removeBug = (id: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      bugs: prev.bugs.filter((bug) => bug.id !== id),
+    }));
+  };
+ 
+  const isFormValid = () =>
+    formData.projectName.trim() !== "" &&
+    formData.userName.trim() !== "" &&
+    formData.feedback.trim() !== "" &&
+    formData.status.trim() !== "";
+ 
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      await submitReport({
+        testing_report: {
+          project_name: formData.projectName,
+          userName: formData.userName,
+          feedback: formData.feedback,
+          status: formData.status,
+          bugDetails: formData.bugs.map((b) => ({
+            bugTitle: b.bugTitle,
+            description: b.description,
+            priority: b.priority,
+          })),
+        },
+      });
+ 
+      alert("Report submitted successfully!");
+      setFormData({
+        projectName: "",
+        userName: "",
+        feedback: "",
+        status: "pending",
+        bugs: [],
+      });
+    } catch (err) {
+      alert("Failed to submit report.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+ 
   return (
-    <div className="max-w-4xl mx-auto mt-8 bg-white shadow rounded p-6">
-      <h2 className="text-2xl font-bold mb-4">Project List</h2>
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">Project Name</th>
-            <th className="p-2 border">Username</th>
-            <th className="p-2 border">Status</th>
-            <th className="p-2 border">Created</th>
-            <th className="p-2 border">Updated</th>
-            <th className="p-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.map(p => (
-            <tr key={p._id} className="hover:bg-gray-50">
-              <td className="p-2 border">{p.projectName}</td>
-              <td className="p-2 border">{p.userName}</td>
-              <td className="p-2 border">
-                {editingId === p._id ? (
-                  <select value={newStatus} onChange={e => setNewStatus(e.target.value)} className="border rounded px-2 py-1">
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="resolved">Resolved</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
-                ) : (
-                  <span className={`px-2 py-1 rounded ${p.status === "resolved" ? "bg-green-100 text-green-700" : p.status === "rejected" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}>
-                    {p.status}
-                  </span>
-                )}
-              </td>
-              <td className="p-2 border">{new Date(p.createdAt).toLocaleString()}</td>
-              <td className="p-2 border">{new Date(p.updatedAt).toLocaleString()}</td>
-              <td className="p-2 border">
-                {editingId === p._id ? (
-                  <button onClick={() => handleSave(p._id)} className="bg-green-500 text-white px-3 py-1 rounded mr-2">Save</button>
-                ) : (
-                  <button onClick={() => handleEdit(p._id, p.status)} className="bg-blue-500 text-white px-3 py-1 rounded">Edit</button>
-                )}
-                {editingId === p._id && (
-                  <button onClick={() => setEditingId(null)} className="bg-gray-400 text-white px-3 py-1 rounded ml-2">Cancel</button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="max-w-5xl mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">🧪 QA Monitor</h1>
+      <p className="text-gray-600 mb-6">Fill in your testing report below.</p>
+ 
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Project Name *
+          </label>
+          <input
+            type="text"
+            value={formData.projectName}
+            onChange={(e) => handleInputChange("projectName", e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+            placeholder="e.g. Shopping Cart QA"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            User Name *
+          </label>
+          <input
+            type="text"
+            value={formData.userName}
+            onChange={(e) => handleInputChange("userName", e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+            placeholder="e.g. Govind"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Status *
+          </label>
+          <select
+            value={formData.status}
+            onChange={(e) => handleInputChange("status", e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+          >
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+ 
+      <div className="mb-6">
+        <label className="block text-sm font-medium mb-1 text-gray-700">
+          Feedback *
+        </label>
+        <textarea
+          rows={4}
+          value={formData.feedback}
+          onChange={(e) => handleInputChange("feedback", e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200"
+          placeholder="Describe your testing feedback..."
+        />
+      </div>
+ 
+      {/* Bugs Section */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            🐞 Bugs ({formData.bugs.length})
+          </h2>
+          <button
+            onClick={addBug}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md flex items-center space-x-1"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Add Bug</span>
+          </button>
+        </div>
+ 
+        {formData.bugs.length === 0 && (
+          <p className="text-gray-500 text-sm">No bugs added yet.</p>
+        )}
+ 
+        {formData.bugs.map((bug, idx) => (
+          <div
+            key={bug.id}
+            className="border border-gray-200 rounded-lg p-4 mb-4 bg-gray-50"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-medium">Bug #{idx + 1}</h3>
+              <button
+                onClick={() => removeBug(bug.id)}
+                className="text-red-500 hover:text-red-700"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+ 
+            <div className="grid md:grid-cols-2 gap-4 mb-3">
+              <div>
+                <label className="block text-sm mb-1 text-gray-700">
+                  Bug Title *
+                </label>
+                <input
+                  type="text"
+                  value={bug.bugTitle}
+                  onChange={(e) =>
+                    updateBug(bug.id, "bugTitle", e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="e.g. Button not clickable"
+                />
+              </div>
+              <div>
+                <label className="block text-sm mb-1 text-gray-700">
+                  Priority *
+                </label>
+                <select
+                  value={bug.priority}
+                  onChange={(e) =>
+                    updateBug(bug.id, "priority", e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+            </div>
+ 
+            <div>
+              <label className="block text-sm mb-1 text-gray-700">
+                Description *
+              </label>
+              <textarea
+                rows={2}
+                value={bug.description}
+                onChange={(e) =>
+                  updateBug(bug.id, "description", e.target.value)
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                placeholder="Bug description..."
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+ 
+      {/* Submit & Reset */}
+      <div className="flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={() =>
+            setFormData({
+              projectName: "",
+              userName: "",
+              feedback: "",
+              status: "pending",
+              bugs: [],
+            })
+          }
+          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
+        >
+          Reset
+        </button>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={!isFormValid() || isSubmitting}
+          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+        >
+          {isSubmitting ? "Submitting..." : "Submit Report"}
+        </button>
+      </div>
     </div>
   );
-}
+};
+ 
+export default QAMonitorForm;

@@ -15,7 +15,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
-  const role = searchParams.get("role");
+  const role = searchParams.get("role") ?? "user"; // Default to 'user' if no role is provided
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
