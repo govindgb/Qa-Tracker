@@ -7,6 +7,7 @@ export default function ResetPasswordPage() {
   const { resetPassword } = useAuth();
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmShowPassword, setconfirmShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -87,7 +88,7 @@ export default function ResetPasswordPage() {
                 <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
               </div>
               <input
-                 type={showPassword ? "text" : "password"}
+                 type={confirmShowPassword ? "text" : "password"}
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -95,10 +96,10 @@ export default function ResetPasswordPage() {
               />
                 <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setconfirmShowPassword(!confirmShowPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center"
               >
-                {showPassword ? (
+                {confirmShowPassword ? (
                   <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />
                 ) : (
                   <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 transition-colors" />

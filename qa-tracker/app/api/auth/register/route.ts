@@ -7,7 +7,7 @@ import { hashPassword, generateToken } from '@/lib/auth';
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
-    
+    console.log('Connected to database for registration');
     const body = await request.json();
     const validatedData = registerSchema.parse(body);
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       ...validatedData,
       password: hashedPassword
     });
-
+console.log('User created:', user);
     // Generate token
     const token = generateToken({
       userId: user._id,

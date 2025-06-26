@@ -31,7 +31,6 @@ export async function POST(request: NextRequest) {
     }
  
     // Create bug report
-        // Create bug report
         const bug = await Bug.create({
             ...validatedData,
             userId: user._id,
