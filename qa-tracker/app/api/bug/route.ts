@@ -145,7 +145,7 @@ export async function GET(request: NextRequest) {
     console.log('Bug found:', bug);
     
     return NextResponse.json({
-      message: 'Bug retrieved successfully',
+      message: 'successfully fectched the data by Id',
       bug,
     });
   } catch (error: any) {
