@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext"; // using the resetPassword method
-import { Eye, EyeOff,Mail, Lock, TestTube2 } from "lucide-react";
+import { Eye, EyeOff,Mail, Lock, Bug } from "lucide-react";
 
 export default function ResetPasswordPage() {
   const { resetPassword } = useAuth();
@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
         <div className="bg-white/80 rounded-2xl shadow-2xl border border-white/20 p-8 transform hover:scale-105 transition-all duration-300">
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-              <TestTube2 className="w-8 h-8 text-white" />
+              <Bug className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Reset Password

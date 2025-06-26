@@ -29,7 +29,10 @@ const QAMonitorForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { submitReport } = useReport();
 
-  const handleInputChange = (field: keyof Omit<FormData, "bugs">, value: string) => {
+  const handleInputChange = (
+    field: keyof Omit<FormData, "bugs">,
+    value: string
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -46,7 +49,9 @@ const QAMonitorForm: React.FC = () => {
   const updateBug = (id: number, field: keyof Bug, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      bugs: prev.bugs.map((bug) => (bug.id === id ? { ...bug, [field]: value } : bug)),
+      bugs: prev.bugs.map((bug) =>
+        bug.id === id ? { ...bug, [field]: value } : bug
+      ),
     }));
   };
 
@@ -94,7 +99,9 @@ const QAMonitorForm: React.FC = () => {
 
       <div className="grid md:grid-cols-2 gap-4 mb-6">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-700">Project Name *</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            Project Name *
+          </label>
           <input
             type="text"
             value={formData.projectName}
@@ -104,7 +111,9 @@ const QAMonitorForm: React.FC = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-700">User Name *</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">
+            User Name *
+          </label>
           <input
             type="text"
             value={formData.userName}
@@ -116,7 +125,9 @@ const QAMonitorForm: React.FC = () => {
       </div>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium mb-1 text-gray-700">Feedback *</label>
+        <label className="block text-sm font-medium mb-1 text-gray-700">
+          Feedback *
+        </label>
         <textarea
           rows={4}
           value={formData.feedback}
@@ -129,7 +140,9 @@ const QAMonitorForm: React.FC = () => {
       {/* Bugs Section */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">🐞 Bugs ({formData.bugs.length})</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            🐞 Bugs ({formData.bugs.length})
+          </h2>
           <button
             onClick={addBug}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md flex items-center space-x-1"
@@ -160,20 +173,28 @@ const QAMonitorForm: React.FC = () => {
 
             <div className="grid md:grid-cols-2 gap-4 mb-3">
               <div>
-                <label className="block text-sm mb-1 text-gray-700">Bug Title *</label>
+                <label className="block text-sm mb-1 text-gray-700">
+                  Bug Title *
+                </label>
                 <input
                   type="text"
                   value={bug.bugTitle}
-                  onChange={(e) => updateBug(bug.id, "bugTitle", e.target.value)}
+                  onChange={(e) =>
+                    updateBug(bug.id, "bugTitle", e.target.value)
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="e.g. Button not clickable"
                 />
               </div>
               <div>
-                <label className="block text-sm mb-1 text-gray-700">Priority *</label>
+                <label className="block text-sm mb-1 text-gray-700">
+                  Priority *
+                </label>
                 <select
                   value={bug.priority}
-                  onChange={(e) => updateBug(bug.id, "priority", e.target.value)}
+                  onChange={(e) =>
+                    updateBug(bug.id, "priority", e.target.value)
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
                   <option value="low">Low</option>
@@ -185,11 +206,15 @@ const QAMonitorForm: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm mb-1 text-gray-700">Description *</label>
+              <label className="block text-sm mb-1 text-gray-700">
+                Description *
+              </label>
               <textarea
                 rows={2}
                 value={bug.description}
-                onChange={(e) => updateBug(bug.id, "description", e.target.value)}
+                onChange={(e) =>
+                  updateBug(bug.id, "description", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 placeholder="Bug description..."
               />
@@ -203,7 +228,12 @@ const QAMonitorForm: React.FC = () => {
         <button
           type="button"
           onClick={() =>
-            setFormData({ projectName: "", userName: "", feedback: "", bugs: [] })
+            setFormData({
+              projectName: "",
+              userName: "",
+              feedback: "",
+              bugs: [],
+            })
           }
           className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
         >
