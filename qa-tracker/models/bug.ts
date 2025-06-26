@@ -1,25 +1,29 @@
+// Updated Bug Schema
 import mongoose, { Document, Schema } from "mongoose";
 
-// Update interface to match form structure
 export interface IBug extends Document {
-  projectName: string;
+  user_id: string; // Changed from userId to user_id
+  project_name: string; // Changed from projectName to project_name
   userName: string;
   feedback: string;
+  status: "pending" | "in-progress" | "resolved" | "rejected" | "completed"; // Added "completed"
   bugDetails: {
     bugTitle: string;
     description: string;
     priority: "low" | "medium" | "high" | "critical";
   }[];
-  status: "pending" | "in-progress" | "resolved" | "rejected";
-  userId?: mongoose.Types.ObjectId;
-  userEmail?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const BugSchema = new Schema<IBug>(
   {
-    projectName: {
+    user_id: {
+      type: String, // Changed to String to match your payload
+      required: [true, "User ID is required"],
+      trim: true,
+    },
+    project_name: { // Changed from projectName
       type: String,
       required: [true, "Project name is required"],
       trim: true,
@@ -35,6 +39,11 @@ const BugSchema = new Schema<IBug>(
       type: String,
       required: [true, "Feedback is required"],
       trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "in-progress", "resolved", "rejected", "completed"], // Added "completed"
+      default: "pending",
     },
     bugDetails: {
       type: [
@@ -58,20 +67,6 @@ const BugSchema = new Schema<IBug>(
       ],
       required: [true, "Bug details array is required"],
     },
-    status: {
-      type: String,
-      enum: ["pending", "in-progress", "resolved", "rejected"],
-      default: "pending",
-    },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: false,
-    },
-    userEmail: {
-      type: String,
-      required: false,
-    },
   },
   {
     timestamps: true,
@@ -79,3 +74,4 @@ const BugSchema = new Schema<IBug>(
 );
 
 export default mongoose.models.Bug || mongoose.model<IBug>("Bug", BugSchema);
+
