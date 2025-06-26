@@ -1,21 +1,22 @@
 import mongoose, { Document, Schema } from "mongoose";
- 
+
+// Update interface to match form structure
 export interface IBug extends Document {
   projectName: string;
-  testingRound: number;
-  bug: {
+  userName: string;
+  feedback: string;
+  bugDetails: {
     bugTitle: string;
     description: string;
     priority: "low" | "medium" | "high" | "critical";
   }[];
   status: "pending" | "in-progress" | "resolved" | "rejected";
-  userId: mongoose.Types.ObjectId;
-  userName: string;
-  userEmail: string;
+  userId?: mongoose.Types.ObjectId;
+  userEmail?: string;
   createdAt: Date;
   updatedAt: Date;
 }
- 
+
 const BugSchema = new Schema<IBug>(
   {
     projectName: {
@@ -25,12 +26,17 @@ const BugSchema = new Schema<IBug>(
       minlength: [2, "Project name must be at least 2 characters"],
       maxlength: [100, "Project name cannot exceed 100 characters"],
     },
-    testingRound: {
-      type: Number,
-      required: [true, "Testing round is required"],
-      min: [1, "Testing round must be at least 1"],
+    userName: {
+      type: String,
+      required: [true, "User name is required"],
+      trim: true,
     },
-    bug: {
+    feedback: {
+      type: String,
+      required: [true, "Feedback is required"],
+      trim: true,
+    },
+    bugDetails: {
       type: [
         {
           bugTitle: {
@@ -46,11 +52,11 @@ const BugSchema = new Schema<IBug>(
           priority: {
             type: String,
             enum: ["low", "medium", "high", "critical"],
-            default: "low",
+            default: "medium",
           },
         },
       ],
-      required: [true, "Bug array is required"],
+      required: [true, "Bug details array is required"],
     },
     status: {
       type: String,
@@ -60,21 +66,16 @@ const BugSchema = new Schema<IBug>(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
-    },
-    userName: {
-      type: String,
-      required: true,
+      required: false,
     },
     userEmail: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {
     timestamps: true,
   }
 );
- 
+
 export default mongoose.models.Bug || mongoose.model<IBug>("Bug", BugSchema);
- 
