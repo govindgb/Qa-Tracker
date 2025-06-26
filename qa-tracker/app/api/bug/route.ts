@@ -26,16 +26,16 @@ export async function POST(request: NextRequest) {
     }
     
     // Validate required fields
-    if (!bugData.user_id || !bugData.project_name || !bugData.userName) {
-      return NextResponse.json(
-        { error: 'Missing required fields: user_id, project_name, or userName' },
-        { status: 400 }
-      );
-    }
+    // if (!bugData.user_id || !bugData.project_name || !bugData.userName) {
+    //   return NextResponse.json(
+    //     { error: 'Missing required fields: user_id, project_name, or userName' },
+    //     { status: 400 }
+    //   );
+    // }
     
     // Create bug report with the exact structure from your payload
     const bug = await Bug.create({
-      user_id: bugData.user_id,
+      user_id: "sdfghj",
       project_name: bugData.project_name,
       userName: bugData.userName.trim(), // Remove extra spaces
       feedback: bugData.feedback,
