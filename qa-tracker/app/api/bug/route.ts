@@ -24,12 +24,12 @@ export async function POST(request: NextRequest) {
     }
     
     // Validate required fields;
-    if (!bugData.user_id || !bugData.project_name || !bugData.userName) {
-      return NextResponse.json(
-        { error: 'Missing required fields: user_id, project_name, or userName' },
-        { status: 400 }
-      );
-    }
+    // if (!bugData.user_id || !bugData.project_name || !bugData.userName) {
+    //   return NextResponse.json(
+    //     { error: 'Missing required fields: user_id, project_name, or userName' },
+    //     { status: 400 }
+    //   );
+    // }
     
     const bug = await Bug.create({
       user_id: "sdfghj",
