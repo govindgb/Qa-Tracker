@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { Plus, Edit3, Calendar, User, FolderOpen } from "lucide-react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+
 interface Project {
   _id: string;
   project_name: string;
@@ -15,9 +17,10 @@ export default function ProjectTable() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newStatus, setNewStatus] = useState<string>("");
+  const router = useRouter();
 
   useEffect(() => {
-    axios.get("/api/project").then(res => setProjects(res.data.projects));
+    axios.get("/api/project").then((res) => setProjects(res.data.projects));
   }, []);
   const handleEdit = (id: string, status: string) => {
     setEditingId(id);
