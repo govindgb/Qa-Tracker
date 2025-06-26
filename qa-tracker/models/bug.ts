@@ -6,7 +6,7 @@ export interface IBug extends Document {
   project_name: string; // Changed from projectName to project_name
   userName: string;
   feedback: string;
-  status: "pending" | "in-progress" | "resolved" | "rejected" | "completed"; // Added "completed"
+  status: "pending" | "completed"  // Added "completed"
   bugDetails: {
     bugTitle: string;
     description: string;
@@ -42,7 +42,7 @@ const BugSchema = new Schema<IBug>(
     },
     status: {
       type: String,
-      enum: ["pending", "in-progress", "resolved", "rejected", "completed"], // Added "completed"
+      enum: ["pending", "completed"], 
       default: "pending",
     },
     bugDetails: {
