@@ -10,6 +10,7 @@ interface Bug {
 
 interface ReportPayload {
   testing_report: {
+    id?: string | null;
     project_name: string;
     userName: string;
     feedback: string;
@@ -17,6 +18,13 @@ interface ReportPayload {
     status: string;
   };
 }
+
+interface ReportContextType {
+  submitReport: (data: ReportPayload) => Promise<void>;
+  getProjectDetails: (id: string) => Promise<any>;
+  updateReport: (id: string, data: ReportPayload) => Promise<any>; // ✅ New
+}
+
 
 interface ReportContextType {
   submitReport: (data: ReportPayload) => Promise<void>;
@@ -46,8 +54,20 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateReport = async (id: string, data: ReportPayload) => {
+    try {
+      const res = await axios.put(`/api/bug?id=${id}`, data);
+      console.log("Report updated:", res.data);
+      return res.data;
+    } catch (err) {
+      console.error("Error updating report:", err);
+      throw new Error("Failed to update report. Please try again.");
+    }
+  };
+  
+
   return (
-    <ReportContext.Provider value={{ submitReport, getProjectDetails }}>
+    <ReportContext.Provider value={{ submitReport, getProjectDetails , updateReport }}>
       {children}
     </ReportContext.Provider>
   );

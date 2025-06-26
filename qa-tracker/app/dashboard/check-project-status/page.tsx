@@ -46,11 +46,11 @@ export default function ProjectTable() {
   };
 
   const handleAddProject = () => {
-    window.location.href = "/check-project-status/add-project";
+    router.push("/dashboard/check-project-status/add-project");
   };
 
   const handleEditProject = (id: string) => {
-    window.location.href = `/check-project-status/add-project?id=${id}`;
+    router.push(`/dashboard/check-project-status/add-project?id=${id}`);
   };
 
   const getStatusBadge = (status: string) => {
