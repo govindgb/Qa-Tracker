@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import Image from "next/image";
+import Loader from "@/app/common/loader";
 
 export default function ResetPasswordPage() {
   const { resetPassword } = useAuth();
@@ -23,6 +24,9 @@ export default function ResetPasswordPage() {
       setIsLoading(false);
     }
   };
+   if(isLoading) {
+          return <Loader />
+      }
 
   return (
     <div className="min-h-screen bg-white">

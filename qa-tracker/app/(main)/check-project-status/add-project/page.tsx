@@ -3,6 +3,7 @@ import React, { useState , useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useReport } from "@/context/ReportContext";
 import { useSearchParams } from "next/navigation";
+import Loader from "@/app/common/loader";
 // Types
 interface Bug {
   id: number;
@@ -66,8 +67,12 @@ const QAMonitorForm: React.FC = () => {
       } finally {
         setIsLoading(false);
       }
+      
+      if(isLoading) {
+              return <Loader />
+          }
     };
-  
+    
     fetchProject();
   }, [projectId, getProjectDetails]);
 /*************  ✨ Windsurf Command ⭐  *************/
@@ -149,6 +154,7 @@ const QAMonitorForm: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
+   
   };
 
   return (
