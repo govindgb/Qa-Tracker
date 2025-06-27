@@ -73,7 +73,7 @@ export default function Sidebar({
             <Bug className="w-6 h-6 text-white" />
           </div>
           {isSidebarOpen && (
-            <h2 className="text-xl font-bold text-gray-800">QA Monitor</h2>
+            <h2 className="text-2xl font-bold text-gray-800">QA Monitor</h2>
           )}
         </div>
 
@@ -152,7 +152,7 @@ function SidebarLink({
       <div className={clsx("text-indigo-500", active && "text-indigo-700")}>
         {icon}
       </div>
-      {isSidebarOpen && <span>{label}</span>}
+      {isSidebarOpen && <span className="text-lg font-semibold text-gray-1000">{label}</span>}
     </Link>
   );
 }
