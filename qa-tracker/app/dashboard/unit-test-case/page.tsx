@@ -1,70 +1,146 @@
-// components/PostForm.tsx
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Input, Button, Form, Tag } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { message } from "antd";
+import { Plus } from "lucide-react";
 import DashboardLayout from "@/app/layouts/DashboardLayout";
 
-const { TextArea } = Input;
-
-const PostForm = () => {
+export default function PostForm() {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const router = useRouter();
 
-  const handleClose = (removedTag: string) => {
-    setTags(tags.filter(tag => tag !== removedTag));
-  };
-
-  const handleInputConfirm = () => {
-    if (inputValue && !tags.includes(inputValue)) {
-      setTags([...tags, inputValue]);
+  const handleAddTag = () => {
+    const trimmed = inputValue.trim();
+    if (trimmed && !tags.includes(trimmed)) {
+      setTags([...tags, trimmed]);
+      setInputValue("");
     }
-    setInputValue('');
   };
 
-  const onFinish = (values: any) => {
-    const data = { ...values, tags };
-    console.log('Submitted:', data);
-    // send to backend
+  const handleRemoveTag = (removedTag: string) => {
+    setTags(tags.filter((tag) => tag !== removedTag));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!title || !description) {
+      message.error("Title and Description are required.");
+      return;
+    }
+
+    const postData = { title, description, tags };
+    console.log("Bug Report Submitted:", postData);
+    message.success("Bug report submitted successfully!");
+    // Add your backend API call here
   };
 
   return (
     <DashboardLayout>
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Create a Post</h2>
-      <Form layout="vertical" onFinish={onFinish}>
-        <Form.Item label="Title" name="title" rules={[{ required: true, message: 'Title is required' }]}>
-          <Input placeholder="Enter title" />
-        </Form.Item>
+      <div className="min-h-[calc(100vh-64px)] bg-gray-50 p-6">
+        <div className="max-w-4xl mx-auto mt-20">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+              Report a Bug
+            </h2>
 
-        <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Description is required' }]}>
-          <TextArea rows={4} placeholder="Enter description" />
-        </Form.Item>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Title */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  Bug Title
+                </label>
+                <input
+                  type="text"
+                  className="w-full pl-4 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                  placeholder="Enter a brief title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
 
-        <Form.Item label="Tags">
-          <div className="flex flex-wrap gap-2 mb-2">
-            {tags.map(tag => (
-              <Tag key={tag} closable onClose={() => handleClose(tag)}>{tag}</Tag>
-            ))}
+              {/* Description */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  Description
+                </label>
+                <textarea
+                  rows={5}
+                  className="w-full pl-4 pr-4 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 text-gray-900 placeholder-gray-500"
+                  placeholder="Describe the bug in detail"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
+
+              {/* Tags */}
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  Tags
+                </label>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    className="flex-1 pl-4 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-500"
+                    placeholder="Enter a tag and press Add"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddTag}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-xl font-medium transition"
+                  >
+                    <Plus className="h-4 w-4 inline-block mr-1" />
+                    Add
+                  </button>
+                </div>
+
+                {/* Tags List */}
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="bg-indigo-100 text-indigo-700 px-5 py-2 rounded-full text-base font-semibold flex items-center gap-3"
+                    >
+                      {tag}
+                      <button
+                        onClick={() => handleRemoveTag(tag)}
+                        className="text-indigo-500 hover:text-indigo-700"
+                        type="button"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <button
+                  type="submit"
+                  className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                >
+                  Submit Bug
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/dashboard")}
+                  className="flex-1 sm:flex-initial bg-gray-100 text-gray-700 font-semibold py-4 px-6 rounded-xl hover:bg-gray-200 transition-colors duration-200 border border-gray-300"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
-          <Input
-            placeholder="Add tag and press Enter"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onPressEnter={handleInputConfirm}
-          />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-    </DashboardLayout >
+        </div>
+      </div>
+    </DashboardLayout>
   );
-};
-
-export default PostForm;
+}
