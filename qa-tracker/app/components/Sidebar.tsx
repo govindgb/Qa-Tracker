@@ -12,6 +12,7 @@ import {
   ClipboardList,
   Menu,
   ChevronLeft,
+  Tag,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -103,9 +104,16 @@ export default function Sidebar({
           <SidebarLink
             href="/dashboard/check-project-status"
             icon={<ClipboardList className="w-5 h-5" />}
-            label="Project Status"
+            label="Unit Tests cases"
             isSidebarOpen={isSidebarOpen}
             active={pathname === "/dashboard/check-project-status"}
+          />
+          <SidebarLink
+            href="/dashboard/add-tags"
+            icon={<Tag className="w-5 h-5" />}
+            label="Add Tags"
+            isSidebarOpen={isSidebarOpen}
+            active={pathname === "/dashboard/add-tags"}
           />
         </nav>
       </div>
