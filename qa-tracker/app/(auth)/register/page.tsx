@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff, Mail, Lock, User, UserPlus, AlertCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-
+import Loader from "@/app/common/loader";
 export default function RegisterPage() {
   const { register } = useAuth();
   const [email, setEmail] = useState("");
@@ -37,6 +37,9 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
+  if(isLoading) {
+      return <Loader />
+  }
 
   return (
     <div className="min-h-screen bg-white">
