@@ -101,9 +101,9 @@ export default function Sidebar({
             active={pathname === "/dashboard/settings"}
           />
           <SidebarLink
-            href="/dashboard/check-project-status"
+            href="/dashboard/unit-test-cases"
             icon={<ClipboardList className="w-5 h-5" />}
-            label="Project Status"
+            label="Unit Test Cases"
             isSidebarOpen={isSidebarOpen}
             active={pathname === "/dashboard/check-project-status"}
           />
