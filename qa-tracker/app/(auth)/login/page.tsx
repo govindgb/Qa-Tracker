@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, AlertCircle } from "lucide-react";
 import Image from "next/image";
 
 export default function LoginPage() {
@@ -11,12 +11,24 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(""); // Add error state
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(""); // Clear previous errors
+    
     try {
       await login(email, password);
+    } catch (err: any) {
+      // Handle different types of errors
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else if (err.message) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -80,20 +92,22 @@ export default function LoginPage() {
 
         {/* Right Side - Login Form as a Card */}
         <div className="w-full lg:w-7/12 flex items-center justify-start p-6 lg:pl-10 lg:pr-0">
-        <div className="w-full max-w-xl bg-white shadow-2xl border border-gray-200 rounded-2xl p-12 -mt-6 ml-30 z-10">
-
-            {" "}
-            {/* changed max-w-md to max-w-lg */}
+          <div className="w-full max-w-xl bg-white shadow-2xl border border-gray-200 rounded-2xl p-12 -mt-6 ml-30 z-10">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              {" "}
-              {/* text-3xl → text-4xl */}
               Welcome back <span className="inline-block">👋</span>
             </h2>
             <p className="text-base text-gray-600 mb-8">
-              {" "}
-              {/* text-sm → text-base */}
               Log in to your account
             </p>
+
+            {/* Error Message Display */}
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center space-x-3">
+                <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
               <div className="relative">
@@ -151,9 +165,10 @@ export default function LoginPage() {
                 {isLoading ? "Signing in..." : "Continue"}
               </button>
             </form>
+            
             {/* Sign Up Link */}
             <div className="mt-8 text-base text-center text-gray-600">
-              Don’t have an account?{" "}
+              Don't have an account?{" "}
               <a
                 href="/register"
                 className="text-indigo-600 hover:underline font-medium"
